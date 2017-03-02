@@ -34,6 +34,8 @@ Input/Output
     [output] boolean
 
     true if there are two elements from a and b which add up to v, and false otherwise.
+
+    https://codefights.com/interview/qAL6AiSejoJZRNyox/description
 */
 
 
