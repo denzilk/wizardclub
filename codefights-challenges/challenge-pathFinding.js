@@ -49,25 +49,77 @@ The shortest path from start to finish with the possibility of adding an extra e
 https://codefights.com/skill-test/PBSHhgQwRDNYqCeck
 */
 
-function buildNode(start, finish, weight, graph, taken){
-    var pstart = start + 1;
-    var pfinish = finish + 1;
-//    console.log('ENTER: start:'+pstart+', finish: '+pfinish);
-//    console.log(weight);
 
+
+function shortestPathWithEdge(start, finish, weight, graph){
+    var emptyedges=[];
+    // massage source data
+    start--;
+    finish--;
+    var i,j, length = graph.length;
+    for(i=0; i<length; i++){        
+        for(j=0; j<length; j++){
+            if(graph[i][j]==0){
+                graph[i][j]= Number.POSITIVE_INFINITY;
+                if(i<j){
+                    emptyedges.push([i,j]);
+                }
+            }
+        }
+    }
+
+    var path, cursor, solutions = [floydwarshall(start, finish, graph)]; 
+    
+    for(i=0; i<length; i++){
+        graph[i][i] = 0;
+    }
+    
+    length = emptyedges.length;
+    for(i=0; i<length; i++){
+        
+        cursor = emptyedges[i];
+        path = graph[start][cursor[0]] + weight + graph[cursor[1]][finish];        
+        solutions.push(path);
+        
+        path = graph[finish][cursor[0]] + weight + graph[cursor[1]][start];        
+        solutions.push(path);
+    }
+
+
+    return Math.min.apply(null, solutions) || 0;
+    
+}
+
+function floydwarshall(start, finish, graph){
+    var length = graph.length;
+    var i,j,k;
+    for(k=1; k<length; k++){
+        for(i=0; i<length; i++){
+            for(j=0; j<length; j++){
+                if ( (graph[i][k] + graph[k][j]) < graph[i][j]){
+                    graph[i][j] = graph[j][i] =graph[i][j] = (graph[i][k] + graph[k][j]);
+                }
+            }
+        }
+    }
+//    console.log(graph);
+    return graph[start][finish];
+}
+
+/*
+function buildNode(start, finish, weight, graph, taken){
     var cost = 0;
     if(taken.length){
       cost = graph[taken[taken.length-1]][start];
       if(cost<=0){
         if(weight.used){
           cost += weight.size;
-  //        console.log('WEIGHT USED! cost goes to '+cost);
           weight.size = 0;
         }
       }
     }
     var node = {
-        i: pstart,
+        i: start,
         cost: cost,
         score: cost,
         taken: taken,
@@ -89,30 +141,15 @@ function buildNode(start, finish, weight, graph, taken){
 
         switch(true){
             case (i==start):
-              // console.log(taken.map(function(i){return i+1;}));
-              // console.log('skip route '+ (i+1) +' because self');
-              continue;
             case (taken.indexOf(i)>=0):
-              // console.log(taken.map(function(i){return i+1;}));
-              // console.log('skip route '+ (i+1) +' because already visited');
               continue;
             case (graph[from][i] > 0):
-              // console.log(taken.map(function(i){return i+1;}));
-              // console.log('adding real route '+(from+1)+','+ (i+1) );
-              // console.log( (from+1)+','+(i+1)+'::'+graph[from][i]);
-
               newnode = buildNode(i, finish, Object.assign({},weight), graph, newlist);
               node.children.push(newnode);
               break;
             case (!weight.used):
-              // console.log(taken.map(function(i){return i+1;}));
-              // console.log('adding EXTRA route '+(from+1)+','+ (i+1) );
-              // console.log( (from+1)+','+(i+1)+'::'+graph[from][i]);
               newnode = buildNode(i, finish,Object.assign({},weight,{used:true}), graph, newlist);
               node.children.push(newnode);
-            // default:
-            //   console.log(taken.map(function(i){return i+1;}));
-            //   console.log('skip route '+ (i+1) +' because already used weight');
         }
     }
 
@@ -121,35 +158,22 @@ function buildNode(start, finish, weight, graph, taken){
     }).filter(function(s){
       return (s > 0);
     });
-//    console.log('start/finish: '+start+','+finish);
-    //  if(start == 1){
-    //    console.log('KIDS = '+ kidscores.length);
-    //    console.log(node.children);
-    //    console.log(Math.min.apply(null,kidscores));
-    //  }
+    
     node.score = (kidscores.length ? Math.min.apply(null,kidscores) : 0);
     if(node.score){
       node.score += node.cost;
     }
 
-//    console.log(node);
-  //  console.log('EXITING: start:'+pstart+', finish: '+pfinish);
     return node;
 }
 
 function shortestPathWithEdge(start, finish, weight, graph) {
-    var cursor;
-    var length= graph.length;
-
     start--;
     finish--;
-//    console.log('FROM '+start+' to '+finish);
-//    console.log(graph);
 
-    var nroot = buildNode(start, finish, {size:weight, used:false}, graph, []);
-
-//    console.log(nroot);
-
+    var nroot = buildNode(start, finish, {used:false,size:weight}, graph,[]);
     return nroot.score;
 }
+*/
+
 
