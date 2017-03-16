@@ -52,7 +52,6 @@ function arrayMaxConsecutiveSum2(inputArray) {
         sum += inputArray[i];
 
         if(sum > longest){
-            console.log('set to '+sum);
             longest = sum;
         }
 
