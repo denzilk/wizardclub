@@ -60,7 +60,7 @@ Input/Output
 
                 for(k = i; k < i+n ; k++){
                     for(l = j; l < j+m ; l++){
-                        console.log(k + ','+l+'='+matrix[k][l]);
+                        //console.log(k + ','+l+'='+matrix[k][l]);
                         temp += matrix[k][l];
                     }
                 }
